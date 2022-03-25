@@ -10,20 +10,20 @@ WriteLine("STARTING PRODUCER MULTI TOPICS...");
 
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((hostContext, services) =>
+    {
+        var config = new ProducerConfig
         {
-            var config = new ProducerConfig
-            {
-                BootstrapServers = hostContext.Configuration.GetValue<string>("SERVER_ADDRESS")
-            };
+            BootstrapServers = hostContext.Configuration.GetValue<string>("SERVER_ADDRESS")
+        };
 
-            services.AddSingleton(
-                new ProducerBuilder<Null, string>(config)
-                .Build()
-            );
+        services.AddSingleton(
+            new ProducerBuilder<Null, string>(config)
+            .Build()
+        );
 
-            services.AddHostedService<WorkerTopicA>();
-            services.AddHostedService<WorkerTopicB>();
-        })
+        services.AddHostedService<WorkerTopicA>();
+        services.AddHostedService<WorkerTopicB>();
+    })
     .Build();
 
 await host.RunAsync();
